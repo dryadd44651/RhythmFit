@@ -7,6 +7,8 @@ const ProfilePage = () => {
   const [exercises, setExercises] = useState([]);
   const [newExercise, setNewExercise] = useState({ name: '', max1RM: '', group: '' });
   const [expandedGroup, setExpandedGroup] = useState(null);
+  const [editExerciseId, setEditExerciseId] = useState(null); // 用於追蹤編輯中的動作
+  const [editedExercise, setEditedExercise] = useState({ name: '', max1RM: '' });
 
   useEffect(() => {
     setExercises(getExercises());
@@ -29,6 +31,22 @@ const ProfilePage = () => {
   const handleDelete = (exerciseId) => {
     deleteExercise(exerciseId);
     setExercises(getExercises());
+  };
+
+  const handleEdit = (exercise) => {
+    setEditExerciseId(exercise.id);
+    setEditedExercise({ name: exercise.name, max1RM: exercise.max1RM });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditedExercise((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveEdit = (exerciseId) => {
+    updateExercise(exerciseId, editedExercise);
+    setExercises(getExercises());
+    setEditExerciseId(null);
   };
 
   const toggleGroup = (group) => {
@@ -141,9 +159,32 @@ const ProfilePage = () => {
                   .filter((exercise) => exercise.group === group)
                   .map((exercise) => (
                     <div key={exercise.id} style={styles.exerciseCard}>
-                      <h4>{exercise.name}</h4>
-                      <p>Max 1RM: {exercise.max1RM} lb</p>
-                      <button onClick={() => handleDelete(exercise.id)} style={styles.button}>Delete</button>
+                      {editExerciseId === exercise.id ? (
+                        <>
+                          <input
+                            type="text"
+                            name="name"
+                            value={editedExercise.name}
+                            onChange={handleEditChange}
+                            style={styles.input}
+                          />
+                          <input
+                            type="number"
+                            name="max1RM"
+                            value={editedExercise.max1RM}
+                            onChange={handleEditChange}
+                            style={styles.input}
+                          />
+                          <button onClick={() => handleSaveEdit(exercise.id)} style={styles.button}>Save</button>
+                        </>
+                      ) : (
+                        <>
+                          <h4>{exercise.name}</h4>
+                          <p>Max 1RM: {exercise.max1RM} lb</p>
+                          <button onClick={() => handleEdit(exercise)} style={styles.button}>Edit</button>
+                          <button onClick={() => handleDelete(exercise.id)} style={styles.button}>Delete</button>
+                        </>
+                      )}
                     </div>
                   ))}
               </div>
@@ -195,7 +236,6 @@ const styles = {
     borderRadius: '5px',
     cursor: 'pointer',
     marginTop: '10px',
-    textAlign: 'center',
   },
   importExportButtons: {
     display: 'flex',
