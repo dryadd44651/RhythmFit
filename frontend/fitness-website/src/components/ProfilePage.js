@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getExercises, updateExercise, addExercise, deleteExercise } from './storage';
+import './ProfilePage.css';
+import './global.css';
 
 const muscleGroups = ["leg", "chest", "back", "shoulder", "arm"];
 
@@ -89,19 +91,19 @@ const ProfilePage = () => {
   };
 
   return (
-    <div style={styles.outerContainer}>
-      <div style={styles.container}>
-        <h1 style={styles.title}>Profile Page</h1>
+    <div className="outerContainer">
+      <div className="container">
+        <h1 className="title">Profile Page</h1>
 
         {/* 新增動作表單 */}
-        <form style={styles.form} onSubmit={handleAddExercise}>
+        <form className="form" onSubmit={handleAddExercise}>
           <input
             type="text"
             name="name"
             placeholder="Exercise Name"
             value={newExercise.name}
             onChange={handleInputChange}
-            style={styles.input}
+            className="input"
             required
           />
           <input
@@ -110,14 +112,14 @@ const ProfilePage = () => {
             placeholder="Max 1RM"
             value={newExercise.max1RM}
             onChange={handleInputChange}
-            style={styles.input}
+            className="input"
             required
           />
           <select
             name="group"
             value={newExercise.group}
             onChange={handleInputChange}
-            style={styles.input}
+            className="input"
             required
           >
             <option value="">Select Muscle Group</option>
@@ -127,13 +129,13 @@ const ProfilePage = () => {
             <option value="arm">Arm</option>
             <option value="shoulder">Shoulder</option>
           </select>
-          <button type="submit" style={styles.button}>Add Exercise</button>
+          <button type="submit" className="button">Add Exercise</button>
         </form>
 
         {/* 匯入和匯出按鈕 */}
-        <div style={styles.importExportButtons}>
-          <button onClick={handleExport} style={styles.button}>Export Data</button>
-          <label htmlFor="importFile" style={styles.button}>Import Data</label>
+        <div className="importExportButtons">
+          <button onClick={handleExport} className="button">Export Data</button>
+          <label htmlFor="importFile" className="button">Import Data</label>
           <input
             id="importFile"
             type="file"
@@ -147,18 +149,19 @@ const ProfilePage = () => {
         {muscleGroups.map((group) => (
           <div key={group} style={{ margin: "10px 0" }}>
             <h3 
-              style={group === expandedGroup ? styles.highlightedGroup : styles.groupTitle} 
+              className={`groupTitle ${expandedGroup === group ? 'highlightedGroup' : ''}`}
+
               onClick={() => toggleGroup(group)}
             >
               {group.charAt(0).toUpperCase() + group.slice(1)}
             </h3>
             
             {expandedGroup === group && (
-              <div style={styles.exerciseList}>
+              <div className="exerciseList">
                 {exercises
                   .filter((exercise) => exercise.group === group)
                   .map((exercise) => (
-                    <div key={exercise.id} style={styles.exerciseCard}>
+                    <div key={exercise.id} className="exerciseCard">
                       {editExerciseId === exercise.id ? (
                         <>
                           <input
@@ -166,23 +169,23 @@ const ProfilePage = () => {
                             name="name"
                             value={editedExercise.name}
                             onChange={handleEditChange}
-                            style={styles.input}
+                            className="input"
                           />
                           <input
                             type="number"
                             name="max1RM"
                             value={editedExercise.max1RM}
                             onChange={handleEditChange}
-                            style={styles.input}
+                            className="input"
                           />
-                          <button onClick={() => handleSaveEdit(exercise.id)} style={styles.button}>Save</button>
+                          <button onClick={() => handleSaveEdit(exercise.id)} className="button">Save</button>
                         </>
                       ) : (
                         <>
                           <h4>{exercise.name}</h4>
                           <p>Max 1RM: {exercise.max1RM} lb</p>
-                          <button onClick={() => handleEdit(exercise)} style={styles.button}>Edit</button>
-                          <button onClick={() => handleDelete(exercise.id)} style={styles.button}>Delete</button>
+                          <button onClick={() => handleEdit(exercise)} className="button">Edit</button>
+                          <button onClick={() => handleDelete(exercise.id)} className="button">Delete</button>
                         </>
                       )}
                     </div>
@@ -197,71 +200,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
-const styles = {
-  outerContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-  },
-  container: {
-    maxWidth: '400px',
-    width: '100%',
-    textAlign: 'left',
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: '24px',
-    color: '#333',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    marginBottom: '20px',
-  },
-  input: {
-    margin: '10px 0',
-    padding: '8px',
-    fontSize: '16px',
-    width: '100%',
-  },
-  button: {
-    padding: '10px 20px',
-    fontSize: '14px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    marginTop: '10px',
-  },
-  importExportButtons: {
-    display: 'flex',
-    gap: '10px',
-    marginBottom: '20px',
-  },
-  groupTitle: {
-    fontSize: '20px',
-    cursor: 'pointer',
-    textAlign: 'left',
-  },
-  highlightedGroup: {
-    fontSize: '20px',
-    cursor: 'pointer',
-    color: 'blue',
-    textAlign: 'left',
-  },
-  exerciseList: {
-    paddingLeft: '10px',
-  },
-  exerciseCard: {
-    padding: '10px',
-    margin: '10px 0',
-    border: '1px solid #ddd',
-    borderRadius: '5px',
-    backgroundColor: '#f9f9f9',
-    textAlign: 'left',
-  },
-};

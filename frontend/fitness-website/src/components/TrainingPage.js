@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getExercises, updateExercise } from './storage';
+import './TrainingPage.css';
+import './global.css';
 
 const cycles = {
   light: { rm: 60, times: [12, 15], sets: 6 },
@@ -26,7 +28,6 @@ const TrainingPage = () => {
   }, []);
 
   useEffect(() => {
-    // 儲存當前週期和訓練進度至 localStorage
     localStorage.setItem("currentCycle", currentCycle);
     localStorage.setItem("trainedGroups", JSON.stringify(trainedGroups));
   }, [currentCycle, trainedGroups]);
@@ -58,9 +59,9 @@ const TrainingPage = () => {
   };
 
   return (
-    <div style={styles.outerContainer}>
-      <div style={styles.container}>
-        <h1 style={styles.title}>Training Page</h1>
+    <div className="outerContainer">
+      <div className="container">
+        <h1 className="title">Training Page</h1>
         <h2>Current Cycle: {currentCycle.charAt(0).toUpperCase() + currentCycle.slice(1)}</h2>
 
         {muscleGroups.map((group) => {
@@ -69,24 +70,24 @@ const TrainingPage = () => {
 
           return (
             <div key={group} style={{ margin: "10px 0" }}>
-              <div style={styles.groupHeader}>
+              <div className="groupHeader">
                 <h3 
-                  style={group === expandedGroup ? styles.highlightedGroup : styles.groupTitle} 
+                  className={`groupTitle ${expandedGroup === group ? 'highlightedGroup' : ''}`}
                   onClick={() => toggleGroup(group)}
                 >
                   {group.charAt(0).toUpperCase() + group.slice(1)}
                 </h3>
                 {isTrained ? (
-                  <button onClick={() => handleRetrain(group)} style={styles.button}>Retrain</button>
+                  <button onClick={() => handleRetrain(group)} className="button">Retrain</button>
                 ) : (
-                  <button onClick={() => handleDone(group)} style={styles.button}>Done</button>
+                  <button onClick={() => handleDone(group)} className="button">Done</button>
                 )}
               </div>
               
               {expandedGroup === group && (
-                <div style={styles.exerciseList}>
+                <div className="exerciseList">
                   {groupExercises.map((exercise) => (
-                    <div key={exercise.id} style={isTrained ? styles.trainedExercise : styles.exerciseCard}>
+                    <div key={exercise.id} className={isTrained ? "trainedExercise" : "exerciseCard"}>
                       <h4>{exercise.name}</h4>
                       <p>Weight: {Math.round(exercise.max1RM * cycles[currentCycle].rm / 100)} lb</p>
                       <p>Reps: {cycles[currentCycle].times.join(" - ")}</p>
@@ -99,85 +100,10 @@ const TrainingPage = () => {
           );
         })}
 
-        <button onClick={finishCycle} style={styles.finishButton}>Finish Cycle</button>
+        <button onClick={finishCycle} className="finishButton">Finish Cycle</button>
       </div>
     </div>
   );
 };
 
 export default TrainingPage;
-
-const styles = {
-  outerContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-  },
-  container: {
-    maxWidth: '400px',
-    width: '100%',
-    textAlign: 'left',
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: '24px',
-    color: '#333',
-  },
-  groupHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-  },
-  groupTitle: {
-    fontSize: '20px',
-    cursor: 'pointer',
-    textAlign: 'left',
-  },
-  highlightedGroup: {
-    fontSize: '20px',
-    cursor: 'pointer',
-    color: 'blue',
-    textAlign: 'left',
-  },
-  exerciseList: {
-    paddingLeft: '10px',
-  },
-  exerciseCard: {
-    padding: '10px',
-    margin: '10px 0',
-    border: '1px solid #ddd',
-    borderRadius: '5px',
-    backgroundColor: '#f9f9f9',
-    textAlign: 'left',
-  },
-  trainedExercise: {
-    padding: '10px',
-    margin: '10px 0',
-    border: '1px solid #ddd',
-    borderRadius: '5px',
-    backgroundColor: '#d3d3d3',
-    color: '#aaa',
-    textAlign: 'left',
-  },
-  button: {
-    padding: '10px 20px',
-    fontSize: '14px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-  finishButton: {
-    padding: '10px 20px',
-    fontSize: '16px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
-    width: '100%',
-    marginTop: '20px',
-    textAlign: 'center',
-  },
-};

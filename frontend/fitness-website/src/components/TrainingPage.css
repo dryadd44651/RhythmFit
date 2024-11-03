@@ -1,0 +1,51 @@
+/* TrainingPage.css */
+
+.groupHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.groupTitle {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.highlightedGroup {
+    font-size: 20px;
+    cursor: pointer;
+    color: blue;
+}
+
+.exerciseList {
+    padding-left: 10px;
+}
+
+.exerciseCard {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.trainedExercise {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #d3d3d3;
+    color: #aaa;
+}
+
+.finishButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+}
