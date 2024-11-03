@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getExercises, updateExercise, addExercise, deleteExercise } from './storage';
 import './ProfilePage.css';
-import './global.css';
+import basicTrainingData from './Basic_training_data.json';
 
 const muscleGroups = ["leg", "chest", "back", "shoulder", "arm"];
 
@@ -90,6 +90,20 @@ const ProfilePage = () => {
     }
   };
 
+  const loadDefaultPlan = () => {
+    const existingExercises = getExercises();
+    if (existingExercises.length > 0) {
+      const confirmOverwrite = window.confirm("This action will overwrite your original plan. Are you sure you want to continue?");
+      if (!confirmOverwrite) return;
+    }
+  
+    localStorage.setItem("trainedGroups", JSON.stringify(basicTrainingData.trainedGroups));
+    localStorage.setItem("currentCycle", basicTrainingData.currentCycle);
+    localStorage.setItem("exercises", JSON.stringify(basicTrainingData.exercises));
+    setExercises(getExercises());
+    alert("Default training plan loaded!");
+  };
+
   return (
     <div className="outerContainer">
       <div className="container">
@@ -143,14 +157,14 @@ const ProfilePage = () => {
             onChange={handleImport}
             style={{ display: "none" }}
           />
+          <button onClick={loadDefaultPlan} className="button">Default Plan</button>
         </div>
 
         {/* 顯示訓練動作列表 */}
         {muscleGroups.map((group) => (
           <div key={group} style={{ margin: "10px 0" }}>
             <h3 
-              className={`groupTitle ${expandedGroup === group ? 'highlightedGroup' : ''}`}
-
+              className={`groupTitle ${expandedGroup === group ? 'highlightedGroup' : ''}`} 
               onClick={() => toggleGroup(group)}
             >
               {group.charAt(0).toUpperCase() + group.slice(1)}
