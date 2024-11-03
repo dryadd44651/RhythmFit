@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getExercises, updateExercise } from './storage';
-import './TrainingPage.css';
 import './global.css';
+import './TrainingPage.css';
+
 
 const cycles = {
   light: { rm: 60, times: [12, 15], sets: 6 },
@@ -69,12 +70,8 @@ const TrainingPage = () => {
           const groupExercises = exercises.filter((exercise) => exercise.group === group);
 
           return (
-            <div key={group} style={{ margin: "10px 0" }}>
-              <div className="groupHeader">
-                <h3 
-                  className={`groupTitle ${expandedGroup === group ? 'highlightedGroup' : ''}`}
-                  onClick={() => toggleGroup(group)}
-                >
+              <div key={group} className="groupHeader">
+                <h3 className="groupTitle" onClick={() => toggleGroup(group)}>
                   {group.charAt(0).toUpperCase() + group.slice(1)}
                 </h3>
                 {isTrained ? (
@@ -82,7 +79,6 @@ const TrainingPage = () => {
                 ) : (
                   <button onClick={() => handleDone(group)} className="button">Done</button>
                 )}
-              </div>
               
               {expandedGroup === group && (
                 <div className="exerciseList">
