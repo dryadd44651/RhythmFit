@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getExercises, updateExercise, addExercise, deleteExercise } from './storage';
+import axios from "axios";
 import './ProfilePage.css';
 import basicTrainingData from './Basic_training_data.json';
 
@@ -9,8 +11,78 @@ const ProfilePage = () => {
   const [exercises, setExercises] = useState([]);
   const [newExercise, setNewExercise] = useState({ name: '', max1RM: '', group: '' });
   const [expandedGroup, setExpandedGroup] = useState(null);
-  const [editExerciseId, setEditExerciseId] = useState(null); // 用於追蹤編輯中的動作
+  const [editExerciseId, setEditExerciseId] = useState(null);
   const [editedExercise, setEditedExercise] = useState({ name: '', max1RM: '' });
+  const [username, setUsername] = useState('');
+  const navigate = useNavigate();
+
+  // 檢查用戶是否已登入
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      navigate('/login'); // 跳轉到登入頁面
+    } else {
+      fetchUserProfile();
+    }
+  }, [navigate]);
+
+  // 獲取當前用戶的用戶名
+  const fetchUserProfile = async () => {
+    let accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      console.error("Access token not found");
+      navigate('/login');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/users/', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+  
+      if (response.status === 401) {
+        console.log("Access token expired, attempting to refresh...");
+        accessToken = await refreshAccessToken();
+        if (accessToken) {
+          return fetchUserProfile(); // 再次嘗試請求
+        } else {
+          throw new Error("Unable to refresh token");
+        }
+      }
+  
+      const data = await response.json();
+      console.log("User Profile:", data);
+      setUsername(data[0]?.username || "Unknown User");
+    } catch (err) {
+      console.error(err);
+      navigate('/login');
+    }
+  };
+  
+  const refreshAccessToken = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      console.error("Refresh token not found");
+      navigate('/login');
+      return;
+    }
+  
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/token/refresh/', {
+        refresh: refreshToken,
+      });
+  
+      localStorage.setItem('accessToken', response.data.access);
+      console.log("Access token refreshed");
+      return response.data.access;
+    } catch (err) {
+      console.error("Failed to refresh token:", err);
+      navigate('/login');
+    }
+  };
+  
 
   useEffect(() => {
     setExercises(getExercises());
@@ -108,6 +180,7 @@ const ProfilePage = () => {
     <div className="outerContainer">
       <div className="container">
         <h1 className="title">Profile Page</h1>
+        <h2>Welcome, {username}</h2> {/* 顯示用戶名 */}
 
         {/* 新增動作表單 */}
         <form className="form" onSubmit={handleAddExercise}>
