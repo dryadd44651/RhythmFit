@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from .models import Exercise, Workout
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +21,15 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+    
+class ExerciseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exercise
+        fields = ['id', 'name', 'max1RM', 'group']
+
+class WorkoutSerializer(serializers.ModelSerializer):
+    exercises = ExerciseSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Workout
+        fields = ['user', 'currentCycle', 'trainedGroups', 'exercises']
