@@ -6,6 +6,7 @@
 # Verify API
 - Using JWT authentication in the frontend: When the frontend sends a request to a protected endpoint, it can add Authorization: Bearer <access_token> in the request header to complete the authentication. Protect other APIs: To apply JWT authentication to other
 
-
+#acccount management
+http://127.0.0.1:8000/admin/
 
 python manage.py runserver

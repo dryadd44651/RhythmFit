@@ -18,8 +18,9 @@ const ProfilePage = () => {
 
   // 檢查用戶是否已登入
   useEffect(() => {
+    const guestMode = localStorage.getItem('guestMode');
     const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
+    if (!accessToken && !guestMode) {
       navigate('/login'); // 跳轉到登入頁面
     } else {
       fetchUserProfile();
@@ -28,6 +29,10 @@ const ProfilePage = () => {
 
   // 獲取當前用戶的用戶名
   const fetchUserProfile = async () => {
+    if (localStorage.getItem('guestMode')) {
+      setUsername("Guest");
+      return;
+    }
     let accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
       console.error("Access token not found");
@@ -54,7 +59,7 @@ const ProfilePage = () => {
   
       const data = await response.json();
       console.log("User Profile:", data);
-      setUsername(data[0]?.username || "Unknown User");
+      setUsername(localStorage.getItem('username') || "Unknown User");
     } catch (err) {
       console.error(err);
       navigate('/login');
