@@ -7,7 +7,9 @@ const LoginPage = ({ setUsername }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  localStorage.removeItem('username');
+  localStorage.removeItem('guestMode');
+  
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(""); // 清空之前的錯誤消息
