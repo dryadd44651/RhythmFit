@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 import TrainingPage from './components/TrainingPage';
 import LoginPage from "./components/LoginPage";
 import ProfilePage from './components/ProfilePage';
+import RegisterPage from "./components/RegisterPage";
 import './App.css';
 
 const App = () => {
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="/Training" element={<TrainingPage />} />
           <Route path="/Profile" element={<ProfilePage />} />
           <Route path="/login" element={<LoginPage setUsername={setUsername} />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/" element={<h1>Welcome to the Fitness App</h1>} />
         </Routes>
       </div>

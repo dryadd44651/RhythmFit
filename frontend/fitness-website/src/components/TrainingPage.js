@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { getExercises, updateExercise } from './storage';
+import { getExercises, updateExercise, fetchUserProfile, refreshAccessToken } from './storage';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
 import './global.css';
 import './TrainingPage.css';
-
 
 const cycles = {
   light: { rm: 60, times: [12, 15], sets: 6 },
@@ -34,78 +32,12 @@ const TrainingPage = () => {
   
   // 檢查用戶是否已登入
   useEffect(() => {
-    const guestMode = localStorage.getItem('guestMode');
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken && !guestMode) {
-      navigate('/login'); // 跳轉到登入頁面
-    } else {
-      fetchUserProfile();
-    }
+    fetchUserProfile(navigate, setUsername);
   }, [navigate]);
 
-  // 獲取當前用戶的用戶名
-  const fetchUserProfile = async () => {
-    if (localStorage.getItem('guestMode')) {
-      setUsername("Guest");
-      return;
-    }
-    let accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-      console.error("Access token not found");
-      navigate('/login');
-      return;
-    }
-  
-    try {
-      const response = await fetch('http://127.0.0.1:8000/api/users/', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-  
-      if (response.status === 401) {
-        console.log("Access token expired, attempting to refresh...");
-        accessToken = await refreshAccessToken();
-        if (accessToken) {
-          return fetchUserProfile(); // 再次嘗試請求
-        } else {
-          throw new Error("Unable to refresh token");
-        }
-      }
-  
-      const data = await response.json();
-      console.log("User Profile:", data);
-      setUsername(localStorage.getItem('username') || "Unknown User");
-    } catch (err) {
-      console.error(err);
-      navigate('/login');
-    }
-  };
-
-  const refreshAccessToken = async () => {
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) {
-      console.error("Refresh token not found");
-      navigate('/login');
-      return;
-    }
-  
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/api/token/refresh/', {
-        refresh: refreshToken,
-      });
-  
-      localStorage.setItem('accessToken', response.data.access);
-      console.log("Access token refreshed");
-      return response.data.access;
-    } catch (err) {
-      console.error("Failed to refresh token:", err);
-      navigate('/login');
-    }
-  };
-
+  // 獲取用戶的訓練動作
   useEffect(() => {
-    setExercises(getExercises());
+    getExercises(setExercises);
   }, []);
 
   useEffect(() => {
