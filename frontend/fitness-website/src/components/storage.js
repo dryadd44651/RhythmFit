@@ -10,7 +10,7 @@ export const getExercises = async (setExercises) => {
 
   const accessToken = localStorage.getItem('accessToken');
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/exercises/', {
+    const response = await axios.get(`${API_BASE_URL}/api/exercises/`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -38,7 +38,7 @@ export const addExercise = async (newExercise, setExercises) => {
   } else {
     try {
       const accessToken = localStorage.getItem('accessToken');
-      await axios.post('http://127.0.0.1:8000/api/exercises/', newExercise, {
+      await axios.post(`${API_BASE_URL}/api/exercises/`, newExercise, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -60,7 +60,7 @@ export const deleteExercise = async (exerciseId, setExercises) => {
   } else {
     try {
       const accessToken = localStorage.getItem('accessToken');
-      await axios.delete(`http://127.0.0.1:8000/api/exercises/${exerciseId}/`, {
+      await axios.delete(`${API_BASE_URL}/api/exercises/${exerciseId}/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -84,7 +84,7 @@ export const updateExercise = async (exerciseId, editedExercise, setExercises) =
   } else {
     try {
       const accessToken = localStorage.getItem('accessToken');
-      await axios.put(`http://127.0.0.1:8000/api/exercises/${exerciseId}/`, editedExercise, {
+      await axios.put(`${API_BASE_URL}/api/exercises/${exerciseId}/`, editedExercise, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -110,7 +110,7 @@ export const fetchUserProfile = async (navigate, setUsername) => {
   }
 
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/users/', {
+    const response = await axios.get(`${API_BASE_URL}/api/users/`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -141,7 +141,7 @@ export const refreshAccessToken = async (navigate) => {
   }
 
   try {
-    const response = await axios.post('http://127.0.0.1:8000/api/token/refresh/', {
+    const response = await axios.post(`${API_BASE_URL}/api/token/refresh/`, {
       refresh: refreshToken,
     });
     localStorage.setItem('accessToken', response.data.access);

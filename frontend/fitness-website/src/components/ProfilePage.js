@@ -76,7 +76,7 @@ const ProfilePage = () => {
         // Member mode export
         try {
           const accessToken = localStorage.getItem('accessToken');
-          const response = await axios.get('http://127.0.0.1:8000/api/exercises/', {
+          const response = await axios.get(`${API_BASE_URL}/api/exercises/`, {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
           const data = response.data;
@@ -124,7 +124,7 @@ const ProfilePage = () => {
             if (!confirmOverwrite) return;
     
             const accessToken = localStorage.getItem('accessToken');
-            await axios.post('http://127.0.0.1:8000/api/exercises/reset/', data, {
+            await axios.post(`${API_BASE_URL}/api/exercises/reset/`, data, {
               headers: { Authorization: `Bearer ${accessToken}` },
             });
     
@@ -159,7 +159,7 @@ const ProfilePage = () => {
           if (!confirmOverwrite) return;
     
           const accessToken = localStorage.getItem('accessToken');
-          const response = await axios.post('http://127.0.0.1:8000/api/exercises/reset/', basicTrainingData, {
+          const response = await axios.post(`${API_BASE_URL}/api/exercises/reset/`, basicTrainingData, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
