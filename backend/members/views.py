@@ -54,6 +54,29 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         if instance.user != request.user:
             return Response(status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
+    
+    @action(detail=False, methods=['post'], url_path='reset', permission_classes=[IsAuthenticated])
+    def reset_plan(self, request):
+        """
+        Reset the current user's exercise plan to the default plan.
+        """
+        user = request.user
+        default_data = request.data
+
+        # Ensure required data is provided in the request
+        if 'exercises' not in default_data:
+            return Response({"error": "Invalid data format. 'exercises' key is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Delete all existing exercises for the current user
+        Exercise.objects.filter(user=user).delete()
+
+        # Create new exercises based on the default data
+        for exercise_data in default_data['exercises']:
+            exercise_data.pop('id', None)  # Remove the 'id' field if present to avoid conflict
+            Exercise.objects.create(user=user, **exercise_data)
+
+        return Response({"message": "Training plan has been reset to the default successfully."}, status=status.HTTP_200_OK)
+
 
 class WorkoutViewSet(viewsets.ModelViewSet):
     """
